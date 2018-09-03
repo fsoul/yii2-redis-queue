@@ -18,19 +18,22 @@ class PersonController extends Controller
 
     public function actionCreate()
     {
+        $request = Yii::$app->request->post();
+
+        $id = Yii::$app->queue->push(new SaveToMySQL([
+            'firstName' => $request['firstName'],
+            'lastName' => $request['lastName'],
+            'phoneNumbers' => $request['phoneNumbers']
+        ]));
+
         $response = Yii::$app->response;
         $response->format = \yii\web\Response::FORMAT_JSON;
         $response->statusCode = 200;
 
-        $req = Yii::$app->request->post();
-
-        $id = Yii::$app->queue->push(new SaveToMySQL([
-            'firstName' => $req['firstName'],
-            'lastName' => $req['lastName'],
-            'phoneNumbers' => $req['phoneNumbers']
-        ]));
-
-        $response->data = ['message' => $req['firstName'].' '.$req['lastName']. ' - ' . implode('|', $req['phoneNumbers'])];
-
+        $response->data = [
+            'message' => 'ok',
+            'queueID' => $id,
+            'payload' => $request
+        ];
     }
 }

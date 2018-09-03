@@ -29,7 +29,7 @@ class SaveToMySQL extends BaseObject implements \yii\queue\JobInterface
         ];
 
         $model->attributes = $data;
-        //$response = [];
+
         if($model->save()){
             foreach ($this->phoneNumbers as $number){
                 $phone = new Phone();
