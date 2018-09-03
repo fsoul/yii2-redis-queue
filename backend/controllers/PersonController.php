@@ -27,7 +27,7 @@ class PersonController extends Controller
         ]));
 
         $response = Yii::$app->response;
-        $response->format = \yii\web\Response::FORMAT_JSON;
+        $response->format = Response::FORMAT_JSON;
         $response->statusCode = 200;
 
         $response->data = [
