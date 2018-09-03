@@ -24,7 +24,7 @@ class PersonController extends Controller
 
         $req = Yii::$app->request->post();
 
-        $id = Yii::$app->queue->push(new ApiJob([
+        $id = Yii::$app->queue->push(new SaveToMySQL([
             'firstName' => $req['firstName'],
             'lastName' => $req['lastName'],
             'phoneNumbers' => $req['phoneNumbers']

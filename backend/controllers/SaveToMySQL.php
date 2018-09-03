@@ -13,7 +13,7 @@ use yii\base\BaseObject;
 use common\models\Person;
 
 
-class ApiJob extends BaseObject implements \yii\queue\JobInterface
+class SaveToMySQL extends BaseObject implements \yii\queue\JobInterface
 {
     public $firstName;
     public $lastName;
