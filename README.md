@@ -55,7 +55,7 @@ cd redis-stable
 make
 ```
 
-Create mysql database and configure it in common/config/main-local.php
+Create mysql database and configure it in ``common/config/main-local.php``
 ```
 CREATE DATABASE yii2test;
 ```
@@ -87,7 +87,7 @@ Clear queue:
 php yii queue/clear
 ```
 
-For emulate POST requests to API set up proper $url in curlPostRequest and run:
+For emulate POST requests to API set up proper $url in ``curlPostRequest.php`` and run:
 ```
 php curlPostRequest.php
 ```
