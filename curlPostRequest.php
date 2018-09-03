@@ -1,6 +1,6 @@
 <?php
 
-for ($i = 0; $i < 1; $i++) {
+for ($i = 0; $i < 100; $i++) {
 
     //API URL
     $url = 'http://backend.test/person/create';
