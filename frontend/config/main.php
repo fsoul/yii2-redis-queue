@@ -9,6 +9,7 @@ $params = array_merge(
 return [
     'id' => 'app-frontend',
     'name' => 'Genesis Test Case',
+    'defaultRoute' => 'person',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
@@ -35,7 +36,7 @@ return [
             ],
         ],
         'errorHandler' => [
-            'errorAction' => 'site/error',
+            'errorAction' => 'person/error',
         ],
         'urlManager' => [
             'enablePrettyUrl' => true,

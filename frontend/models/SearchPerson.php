@@ -45,18 +45,11 @@ class SearchPerson extends Person
     {
         $query = Person::find();
 
-        $query->joinWith(['phones']);
-
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
-
-        $dataProvider->sort->attributes['phones'] = [
-            'asc' => ['phone.number' => SORT_ASC],
-            'desc' => ['phone.number' => SORT_DESC],
-        ];
 
         $this->load($params);
 
@@ -72,8 +65,7 @@ class SearchPerson extends Person
         ]);
 
         $query->andFilterWhere(['like', 'first_name', $this->first_name])
-            ->andFilterWhere(['like', 'last_name', $this->last_name])
-            ->andFilterWhere(['like', 'phones.number', $this->phones]);
+            ->andFilterWhere(['like', 'last_name', $this->last_name]);
 
         return $dataProvider;
     }
