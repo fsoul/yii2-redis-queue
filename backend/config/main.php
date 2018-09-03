@@ -10,21 +10,23 @@ return [
     'id' => 'app-backend',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
-    'bootstrap' => ['queue'],
+    'bootstrap' => [
+        'queue',
+        'log'
+    ],
     'modules' => [],
     'components' => [
         'request' => [
             'parsers' => [
                 'application/json' => 'yii\web\JsonParser',
                 'application/json; charset=UTF-8' => 'yii\web\JsonParser',
-                //'*' => 'yii\web\JsonParser', //by default
             ]
         ],
         'response' => [
             'formatters' => [
-                'json' => [
+                \yii\web\Response::FORMAT_JSON => [
                     'class' => 'yii\web\JsonResponseFormatter',
-                    'prettyPrint' => YII_DEBUG,
+                    'prettyPrint' => YII_DEBUG, // use "pretty" output in debug mode
                     'encodeOptions' => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
                 ],
             ],
@@ -48,7 +50,6 @@ return [
             'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
         ],
         'session' => [
-            // this is the name of the session cookie used for login on the backend
             'name' => 'advanced-backend',
         ],
         'log' => [

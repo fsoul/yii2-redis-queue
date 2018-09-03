@@ -9,8 +9,16 @@ $params = array_merge(
 return [
     'id' => 'app-console',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+    'bootstrap' => ['queue', 'log'],
     'controllerNamespace' => 'console\controllers',
+    'modules' => [
+        'debug' => [
+            'class' => '\yii\debug\Module',
+            'panels' => [
+                'queue' => '\yii\queue\debug\Panel',
+            ],
+        ],
+    ],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
@@ -29,6 +37,15 @@ return [
                     'levels' => ['error', 'warning'],
                 ],
             ],
+        ],
+        'redis' => [
+            'class' => '\yii\redis\Connection',
+            'retries' => 1,
+        ],
+        'queue' => [
+            'class' => '\yii\queue\redis\Queue',
+            'redis' => 'redis',
+            'channel' => 'queue',
         ],
     ],
     'params' => $params,

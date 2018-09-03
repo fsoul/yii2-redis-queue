@@ -2,7 +2,6 @@
 
 namespace common\models;
 
-use backend\controllers\ApiJob;
 use Yii;
 
 /**
@@ -16,7 +15,6 @@ use Yii;
  */
 class Person extends \yii\db\ActiveRecord
 {
-
     /**
      * {@inheritdoc}
      */
@@ -53,22 +51,5 @@ class Person extends \yii\db\ActiveRecord
     public function getPhones()
     {
         return $this->hasMany(Phone::className(), ['person_id' => 'id']);
-    }
-
-    public function fields()
-    {
-        return [
-            'firstName' => 'first_name',
-            'lastName' => 'last_name',
-        ];
-    }
-
-    public function beforeSave($insert)
-    {
-        Yii::$app->queue(new ApiJob([
-            'data' => $insert
-        ]));
-
-        return false;
     }
 }

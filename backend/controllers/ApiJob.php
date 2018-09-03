@@ -8,21 +8,35 @@
 
 namespace backend\controllers;
 
+use common\models\Phone;
 use yii\base\BaseObject;
 use common\models\Person;
-use yii\helpers\BaseJson;
 
 
 class ApiJob extends BaseObject implements \yii\queue\JobInterface
 {
+    public $firstName;
+    public $lastName;
+    public $phoneNumbers;
+
     public function execute($queue)
     {
-
-        $data = BaseJson::decode($queue);
         $model = new Person();
 
+        $data = [
+            'first_name' => $this->firstName,
+            'last_name' => $this->lastName
+        ];
+
         $model->attributes = $data;
-        $response = [];
-        $model->save();
+        //$response = [];
+        if($model->save()){
+            foreach ($this->phoneNumbers as $number){
+                $phone = new Phone();
+                $phone->person_id = $model->id;
+                $phone->number = $number;
+                $phone->save();
+            }
+        }
     }
 }

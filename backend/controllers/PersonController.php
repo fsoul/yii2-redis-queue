@@ -2,34 +2,35 @@
 
 namespace backend\controllers;
 
-use yii\rest\ActiveController;
+use yii\rest\Controller;
 use yii;
 use yii\web\Response;
 
-class PersonController extends ActiveController
+class PersonController extends Controller
 {
 
-    public $modelClass = 'common\models\Person';
-
-    public function actions()
+    public function behaviors()
     {
-        $actions = parent::actions();
-        unset($actions['delete'], $actions['update']);
-        return $actions;
+        $behaviors = parent::behaviors();
+        $behaviors['contentNegotiator']['formats']['application/json'] = Response::FORMAT_HTML;
+        return $behaviors;
     }
 
-    public function beforeAction($action)
+    public function actionCreate()
     {
-        if($action->id === 'create'){
-            // save json to
+        $response = Yii::$app->response;
+        $response->format = \yii\web\Response::FORMAT_JSON;
+        $response->statusCode = 200;
 
-            $rawData = Yii::$app->getRequest()->getBodyParams();
+        $req = Yii::$app->request->post();
 
-            echo ('$action->id create' . PHP_EOL);
-            var_dump($rawData);
-        }
+        $id = Yii::$app->queue->push(new ApiJob([
+            'firstName' => $req['firstName'],
+            'lastName' => $req['lastName'],
+            'phoneNumbers' => $req['phoneNumbers']
+        ]));
 
-        return false;
-        //return parent::beforeAction($action);
+        $response->data = ['message' => $req['firstName'].' '.$req['lastName']. ' - ' . implode('|', $req['phoneNumbers'])];
+
     }
 }
