@@ -74,7 +74,10 @@ return [
             'showScriptName' => false,
             'rules' => [
                 //'POST person' => 'person/create'
-                ['class' => 'yii\rest\UrlRule', 'controller' => 'person'],
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'controller' => 'person'
+                ],
             ],
         ],
     ],

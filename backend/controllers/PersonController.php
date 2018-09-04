@@ -25,13 +25,22 @@ class PersonController extends yii\rest\ActiveController
         ]);
     }
 
+    public function actions()
+    {
+        $actions = parent::actions();
+        unset($actions['index'], $actions['view'], $actions['update'], $actions['delete'], $actions['options']);
+        return $actions;
+    }
+
+
     public function beforeAction($action)
     {
-        $response = Yii::$app->response;
-        $response->format = Response::FORMAT_JSON;
 
         if($action->id === 'create'){
             $request = Yii::$app->request->post();
+
+            $response = Yii::$app->response;
+            //$response->format = Response::FORMAT_JSON;
 
             if(!$request){
                 $response->statusCode = 404;
@@ -58,15 +67,6 @@ class PersonController extends yii\rest\ActiveController
                 'queueID' => $id,
                 'payload' => $request
             ];
-        }else{
-            $response->statusCode = 404;
-            $response->data = [
-                'name' => 'Not Found',
-                'message' => 'POST data required',
-                'code' => 0,
-                'status' => 404,
-            ];
-            return false;
         }
     }
 }
