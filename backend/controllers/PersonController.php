@@ -2,38 +2,71 @@
 
 namespace backend\controllers;
 
-use yii\rest\Controller;
 use yii;
 use yii\web\Response;
+use yii\helpers\ArrayHelper;
 
-class PersonController extends Controller
+class PersonController extends yii\rest\ActiveController
 {
+    public $modelClass = 'common\models\Person';
 
     public function behaviors()
     {
-        $behaviors = parent::behaviors();
-        $behaviors['contentNegotiator']['formats']['application/json'] = Response::FORMAT_HTML;
-        return $behaviors;
+        return ArrayHelper::merge(parent::behaviors(), [
+            [
+                'class' => 'yii\filters\ContentNegotiator',
+                'formats' => [
+                    'application/json' => Response::FORMAT_JSON,
+                ],
+                'languages' => [
+                    'en',
+                ],
+            ],
+        ]);
     }
 
-    public function actionCreate()
+    public function beforeAction($action)
     {
-        $request = Yii::$app->request->post();
-
-        $id = Yii::$app->queue->push(new SaveToMySQL([
-            'firstName' => $request['firstName'],
-            'lastName' => $request['lastName'],
-            'phoneNumbers' => $request['phoneNumbers']
-        ]));
-
         $response = Yii::$app->response;
         $response->format = Response::FORMAT_JSON;
-        $response->statusCode = 200;
 
-        $response->data = [
-            'message' => 'ok',
-            'queueID' => $id,
-            'payload' => $request
-        ];
+        if($action->id === 'create'){
+            $request = Yii::$app->request->post();
+
+            if(!$request){
+                $response->statusCode = 404;
+                $response->data = [
+                    'name' => 'Not Found',
+                    'message' => 'POST data required',
+                    'code' => 0,
+                    'status' => 404,
+                ];
+                return false;
+            }
+
+            $id = Yii::$app->queue->push(new SaveToMySQL([
+                'firstName' => $request['firstName'],
+                'lastName' => $request['lastName'],
+                'phoneNumbers' => $request['phoneNumbers']
+            ]));
+
+            $response->statusCode = 200;
+
+            $response->data = [
+                'message' => 'ok',
+                'code' => 1,
+                'queueID' => $id,
+                'payload' => $request
+            ];
+        }else{
+            $response->statusCode = 404;
+            $response->data = [
+                'name' => 'Not Found',
+                'message' => 'POST data required',
+                'code' => 0,
+                'status' => 404,
+            ];
+            return false;
+        }
     }
 }

@@ -9,10 +9,20 @@ $params = array_merge(
 return [
     'id' => 'app-backend',
     'basePath' => dirname(__DIR__),
+    'defaultRoute' => 'person',
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => [
         'queue',
-        'log'
+        'log',
+        [
+            'class' => 'yii\filters\ContentNegotiator',
+            'formats' => [
+                'application/json' => \yii\web\Response::FORMAT_JSON
+            ],
+            'languages' => [
+                'en',
+            ],
+        ],
     ],
     'modules' => [],
     'components' => [
@@ -23,24 +33,8 @@ return [
             ]
         ],
         'response' => [
-            'class' => 'yii\web\Response',
-            'on beforeSend' => function ($event) {
-                $response = $event->sender;
-                if ($response->data !== null && Yii::$app->request->get('suppress_response_code')) {
-                    $response->data = [
-                        'success' => $response->isSuccessful,
-                        'data' => $response->data,
-                    ];
-                    $response->statusCode = 200;
-                }
-            },
-            'formatters' => [
-                \yii\web\Response::FORMAT_JSON => [
-                    'class' => 'yii\web\JsonResponseFormatter',
-                    'prettyPrint' => YII_DEBUG, // use "pretty" output in debug mode
-                    'encodeOptions' => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
-                ],
-            ],
+
+
         ],
         'queue' => [
             'class' => '\yii\queue\redis\Queue',
@@ -79,7 +73,8 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                'POST person' => 'person/create'
+                //'POST person' => 'person/create'
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'person'],
             ],
         ],
     ],
